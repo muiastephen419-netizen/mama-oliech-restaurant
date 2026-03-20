@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact — Mama Oliech Restaurant</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .contact-inner {
+      display: grid; grid-template-columns: 1fr 1.3fr;
+      gap: 4.5rem; align-items: start;
+    }
+    /* INFO */
+    .contact-info { position: sticky; top: 5rem; }
+    .contact-info > p { font-family: var(--font-serif); font-size: 1.05rem; color: var(--gray); line-height: 1.9; margin-bottom: 2rem; }
+    .cinfo-cards { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+    .cinfo-card {
+      background: var(--white); border: 1.5px solid var(--cream-dark);
+      border-radius: var(--radius); padding: 1.2rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      text-decoration: none;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+    .cinfo-card:hover { border-color: var(--gold); transform: translateX(4px); }
+    .cinfo-icon {
+      width: 46px; height: 46px; border-radius: 10px;
+      background: var(--red-light); border: 1px solid rgba(139,26,26,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .cinfo-text strong { display: block; font-size: 0.75rem; font-weight: 600; color: var(--dark); text-transform: uppercase; letter-spacing: 1.5px; }
+    .cinfo-text span { font-family: var(--font-serif); font-size: 0.95rem; color: var(--gray); }
+
+    /* Hours card */
+    .hours-card {
+      background: var(--white); border: 1.5px solid var(--cream-dark);
+      border-radius: var(--radius); padding: 1.8rem;
+      margin-bottom: 2rem;
+    }
+    .hours-card h4 { font-family: var(--font-display); color: var(--red-dark); font-size: 1.05rem; margin-bottom: 1rem; }
+    .hrow { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--cream-dark); font-size: 0.88rem; }
+    .hrow:last-child { border-bottom: none; }
+    .hrow .d { color: var(--dark); font-weight: 500; }
+    .hrow .t { color: var(--gray); font-family: var(--font-serif); }
+    .hrow.today .t { color: var(--gold); font-weight: 600; }
+
+    /* Social */
+    .social-row { display: flex; gap: 0.8rem; }
+    .soc {
+      width: 46px; height: 46px; border-radius: 10px;
+      background: var(--white); border: 1.5px solid var(--cream-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; text-decoration: none;
+      transition: border-color var(--transition), transform var(--transition), background var(--transition);
+    }
+    .soc:hover { border-color: var(--gold); background: var(--gold-light); transform: translateY(-3px); }
+
+    /* FORM */
+    .contact-form-card {
+      background: var(--white); border-radius: 20px;
+      padding: 3rem 2.5rem; box-shadow: var(--shadow);
+      border: 1.5px solid var(--cream-dark);
+    }
+    .contact-form-card h3 { font-family: var(--font-display); font-size: 1.8rem; color: var(--red-dark); margin-bottom: 0.3rem; }
+    .contact-form-card > p { font-family: var(--font-serif); font-size: 0.95rem; color: var(--gray); margin-bottom: 2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .contact-submit {
+      width: 100%; padding: 1.1rem;
+      background: var(--red); color: var(--white);
+      border: none; border-radius: var(--radius);
+      font-family: var(--font-body); font-size: 0.88rem; font-weight: 600;
+      letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 4px 20px rgba(139,26,26,0.3);
+    }
+    .contact-submit:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(139,26,26,0.45); }
+    .contact-success {
+      display: none; padding: 1.2rem; margin-top: 1rem;
+      background: #f0faf4; border: 1.5px solid #4caf50;
+      border-radius: var(--radius); color: #2e7d32;
+      font-size: 0.92rem; font-weight: 600; text-align: center;
+    }
+
+    /* MAP PLACEHOLDER */
+    .map-section { background: var(--brown); padding: 0; }
+    .map-placeholder {
+      height: 380px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 1rem; text-align: center;
+      background: linear-gradient(135deg, #2a1205, #1a0a00);
+    }
+    .map-placeholder span { font-size: 3.5rem; }
+    .map-placeholder h3 { font-family: var(--font-display); color: var(--gold); font-size: 1.5rem; }
+    .map-placeholder p { color: rgba(255,255,255,0.4); font-size: 0.9rem; font-family: var(--font-serif); }
+    .map-placeholder a { color: var(--gold); font-size: 0.82rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid var(--gold); }
+
+    /* FAQ */
+    .faq-section { background: var(--cream); }
+    .faq-list { max-width: 760px; margin: 0 auto; }
+    .faq-item { background: var(--white); border-radius: var(--radius); margin-bottom: 0.8rem; overflow: hidden; box-shadow: 0 2px 10px rgba(61,31,10,0.07); }
+    .faq-q { padding: 1.2rem 1.5rem; font-weight: 600; font-size: 0.97rem; color: var(--dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color var(--transition); user-select: none; }
+    .faq-q:hover { color: var(--red); }
+    .faq-q .arr { color: var(--gold); font-size: 1.1rem; transition: transform var(--transition); }
+    .faq-item.open .faq-q .arr { transform: rotate(45deg); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.2s; padding: 0 1.5rem; font-family: var(--font-serif); font-size: 0.95rem; color: var(--gray); line-height: 1.85; }
+    .faq-item.open .faq-a { max-height: 300px; padding: 0 1.5rem 1.3rem; }
+
+    @media (max-width: 900px) {
+      .contact-inner { grid-template-columns: 1fr; }
+      .contact-info { position: static; }
+      .contact-form-card { padding: 2rem 1.5rem; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>Mama <em>Oliech</em></h1>
+    <p>Authentic Kenyan Cuisine Since 2008</p>
+  </header>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="reservations.html">Reservations</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="contact.html" class="active">Contact</a>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80');"></div>
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content">
+      <span class="label">We'd Love to Hear From You</span>
+      <h2>Contact Us</h2>
+    </div>
+  </div>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="contact-inner">
+
+        <!-- INFO -->
+        <div class="contact-info">
+          <span class="section-label">Find Us</span>
+          <h2 class="section-title" style="text-align:left;">Come Visit <em>Us</em></h2>
+          <div class="divider" style="justify-content:flex-start;margin-left:0;"><span>✦</span></div>
+          <p>We're open every day of the week and we'd love to welcome you. Drop in any time or reach out on WhatsApp — we're always happy to help.</p>
+
+          <div class="cinfo-cards">
+            <a href="https://wa.me/254700000000" target="_blank" class="cinfo-card">
+              <div class="cinfo-icon">💬</div>
+              <div class="cinfo-text"><strong>WhatsApp (Fastest)</strong><span>+254 700 000 000</span></div>
+            </a>
+            <a href="tel:+254700000000" class="cinfo-card">
+              <div class="cinfo-icon">📞</div>
+              <div class="cinfo-text"><strong>Phone</strong><span>+254 700 000 000</span></div>
+            </a>
+            <a href="mailto:hello@mamaoliech.co.ke" class="cinfo-card">
+              <div class="cinfo-icon">✉</div>
+              <div class="cinfo-text"><strong>Email</strong><span>hello@mamaoliech.co.ke</span></div>
+            </a>
+            <div class="cinfo-card">
+              <div class="cinfo-icon">📍</div>
+              <div class="cinfo-text"><strong>Address</strong><span>Nairobi, Kenya</span></div>
+            </div>
+          </div>
+
+          <div class="hours-card">
+            <h4>Opening Hours</h4>
+            <div class="hrow today"><span class="d">Monday – Friday ✦</span><span class="t">7:00 AM – 10:00 PM</span></div>
+            <div class="hrow"><span class="d">Saturday</span><span class="t">7:00 AM – 11:00 PM</span></div>
+            <div class="hrow"><span class="d">Sunday</span><span class="t">8:00 AM – 10:00 PM</span></div>
+            <div class="hrow"><span class="d">Public Holidays</span><span class="t">9:00 AM – 9:00 PM</span></div>
+          </div>
+
+          <div class="social-row">
+            <a href="https://wa.me/254700000000" target="_blank" class="soc" title="WhatsApp">💬</a>
+            <a href="#" class="soc" title="Instagram">📸</a>
+            <a href="#" class="soc" title="Facebook">📘</a>
+            <a href="#" class="soc" title="TikTok">🎵</a>
+          </div>
+        </div>
+
+        <!-- FORM -->
+        <div class="contact-form-card">
+          <h3>Send Us a Message</h3>
+          <p>For reservations, events, catering enquiries or just to say hello — we're here.</p>
+
+          <div class="form-row">
+            <div class="form-group"><label>Your Name</label><input class="form-input" type="text" placeholder="e.g. Grace Wanjiku" id="cname"/></div>
+            <div class="form-group"><label>Phone Number</label><input class="form-input" type="tel" placeholder="+254 7XX XXX XXX"/></div>
+          </div>
+          <div class="form-group"><label>Email Address</label><input class="form-input" type="email" placeholder="your@email.com"/></div>
+          <div class="form-group">
+            <label>Subject</label>
+            <select class="form-select">
+              <option value="">What is this about?</option>
+              <option>Table Reservation</option>
+              <option>Private Event / Catering</option>
+              <option>Birthday / Anniversary Arrangement</option>
+              <option>Feedback or Compliment</option>
+              <option>General Enquiry</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Your Message</label><textarea class="form-textarea" placeholder="Tell us how we can help you..."></textarea></div>
+          <button class="contact-submit" onclick="sendMsg()">✦ Send Message</button>
+          <div class="contact-success" id="contactSuccess">
+            🎉 Thank you! We'll get back to you within a few hours.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <div class="map-placeholder">
+    <span>📍</span>
+    <h3>Mama Oliech Restaurant</h3>
+    <p>Nairobi, Kenya</p>
+    <a href="https://maps.google.com" target="_blank">Open in Google Maps →</a>
+  </div>
+
+  <!-- FAQ -->
+  <section class="section faq-section">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-label">Common Questions</span>
+        <h2 class="section-title">Frequently Asked <em>Questions</em></h2>
+        <div class="divider"><span>✦</span></div>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item"><div class="faq-q">Do I need a reservation? <span class="arr">+</span></div><div class="faq-a">Walk-ins are always welcome! However, we recommend reserving a table on weekends and public holidays as we fill up quickly. Reservations are required for groups of 8 or more.</div></div>
+        <div class="faq-item"><div class="faq-q">Do you offer takeaway and delivery? <span class="arr">+</span></div><div class="faq-a">Yes! We offer takeaway for all menu items. Call us or WhatsApp your order 30 minutes in advance and it will be ready for collection. We also partner with Bolt Food and Glovo for delivery within Nairobi.</div></div>
+        <div class="faq-item"><div class="faq-q">Can you cater for private events? <span class="arr">+</span></div><div class="faq-a">Absolutely. We cater for birthdays, weddings, corporate events, funerals and any gathering. Our team will work with you to create the perfect menu. Contact us at least 3 days in advance for event bookings.</div></div>
+        <div class="faq-item"><div class="faq-q">Is there parking available? <span class="arr">+</span></div><div class="faq-a">Yes, we have free parking available for all our guests. Our parking area is secure and monitored.</div></div>
+        <div class="faq-item"><div class="faq-q">Do you have vegetarian or halal options? <span class="arr">+</span></div><div class="faq-a">Yes! We have several vegetarian-friendly dishes on our menu including githeri, sukuma wiki, rice and beans and more. All our beef and chicken dishes are halal. Please let us know of any dietary requirements when you book.</div></div>
+        <div class="faq-item"><div class="faq-q">What payment methods do you accept? <span class="arr">+</span></div><div class="faq-a">We accept M-Pesa (our most popular method), cash, and major debit/credit cards. M-Pesa Till Number: 123456.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col"><h4>Mama Oliech</h4><p>Authentic Kenyan cuisine served with love since 2008. Nairobi's home away from home.</p></div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="menu.html">Menu</a></li><li><a href="reservations.html">Reservations</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Visit Us</h4><p>📍 Nairobi, Kenya<br/>📞 +254 700 000 000<br/>🕐 Mon–Sun: 7am – 10pm<br/>✉ hello@mamaoliech.co.ke</p></div>
+    </div>
+    <p class="footer-bottom">&copy; 2026 <strong>Mama Oliech Restaurant</strong>. All rights reserved. · Website by <strong>Tekashi Designs</strong></p>
+  </footer>
+
+  <a href="https://wa.me/254700000000" class="wa-float" target="_blank">
+    <svg viewBox="0 0 32 32"><path d="M16 0C7.164 0 0 7.163 0 16c0 2.822.737 5.469 2.027 7.77L0 32l8.468-2.004A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.781-1.857l-.487-.289-5.027 1.189 1.21-4.905-.32-.506A13.248 13.248 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.888c-.397-.198-2.347-1.157-2.71-1.289-.364-.133-.628-.198-.893.199-.264.397-1.023 1.289-1.254 1.554-.23.264-.462.298-.859.1-.397-.198-1.676-.617-3.192-1.968-1.18-1.052-1.976-2.35-2.208-2.748-.23-.397-.024-.612.173-.81.178-.177.397-.462.595-.693.199-.23.265-.397.397-.661.133-.265.067-.496-.033-.694-.1-.199-.893-2.152-1.224-2.946-.322-.772-.649-.668-.893-.68l-.759-.013c-.264 0-.694.1-1.058.496-.364.397-1.39 1.357-1.39 3.31s1.423 3.84 1.621 4.104c.198.264 2.8 4.274 6.785 5.992.948.41 1.688.654 2.264.837.951.303 1.817.26 2.5.158.763-.114 2.347-.958 2.678-1.884.33-.927.33-1.721.23-1.884-.1-.165-.364-.265-.76-.463z"/></svg>
+  </a>
+
+  <script>
+    document.querySelectorAll('.faq-q').forEach(q => {
+      q.addEventListener('click', () => {
+        const item = q.parentElement;
+        const open = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!open) item.classList.add('open');
+      });
+    });
+    function sendMsg() {
+      const name = document.getElementById('cname').value;
+      if (!name) { alert('Please enter your name.'); return; }
+      document.getElementById('contactSuccess').style.display = 'block';
+      document.querySelector('.contact-submit').disabled = true;
+      document.querySelector('.contact-submit').style.opacity = '0.5';
+    }
+  </script>
+</body>
+</html>

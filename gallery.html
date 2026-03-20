@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery — Mama Oliech Restaurant</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── FILTER ── */
+    .gal-filter {
+      display: flex; justify-content: center; gap: 0.6rem;
+      flex-wrap: wrap; margin-bottom: 3rem;
+    }
+    .gfilt {
+      font-family: var(--font-body); font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.55rem 1.4rem; border-radius: 2px;
+      border: 1.5px solid var(--cream-dark); background: var(--white);
+      color: var(--gray); cursor: pointer; transition: all var(--transition);
+    }
+    .gfilt:hover, .gfilt.active {
+      background: var(--red); color: var(--white);
+      border-color: var(--red);
+    }
+
+    /* ── MASONRY GRID ── */
+    .gal-masonry {
+      columns: 4; column-gap: 12px; max-width: 1140px; margin: 0 auto;
+    }
+    .gcard {
+      break-inside: avoid; margin-bottom: 12px;
+      border-radius: 10px; overflow: hidden;
+      position: relative; cursor: pointer;
+    }
+    .gcard img {
+      width: 100%; display: block;
+      transition: transform 0.5s ease;
+    }
+    .gcard:hover img { transform: scale(1.06); }
+    .gcard-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(92,15,15,0.85) 0%, transparent 55%);
+      opacity: 0; transition: opacity 0.3s;
+      display: flex; flex-direction: column;
+      justify-content: flex-end; padding: 1rem 1.2rem;
+    }
+    .gcard:hover .gcard-overlay { opacity: 1; }
+    .gcard-tag {
+      display: inline-block; background: rgba(200,146,42,0.25);
+      backdrop-filter: blur(6px); color: var(--gold);
+      font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.25rem 0.7rem; border-radius: 50px;
+      margin-bottom: 0.3rem; align-self: flex-start;
+    }
+    .gcard-title { font-family: var(--font-display); font-size: 1rem; color: var(--white); }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.94);
+      z-index: 1000; display: none; align-items: center;
+      justify-content: center; padding: 2rem; animation: fadeUp 0.25s ease;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-img {
+      max-width: 90vw; max-height: 85vh; border-radius: 10px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.6); object-fit: contain;
+    }
+    .lb-close {
+      position: absolute; top: 1.5rem; right: 2rem;
+      color: rgba(255,255,255,0.6); font-size: 2.5rem;
+      cursor: pointer; background: none; border: none;
+      transition: color var(--transition);
+    }
+    .lb-close:hover { color: var(--gold); }
+    .lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: var(--white); width: 52px; height: 52px; border-radius: 50%;
+      font-size: 1.5rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition);
+    }
+    .lb-nav:hover { background: var(--red); }
+    .lb-prev { left: 1.5rem; }
+    .lb-next { right: 1.5rem; }
+    .lb-caption {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,0.5); font-family: var(--font-serif);
+      font-size: 0.9rem; letter-spacing: 2px;
+    }
+
+    @media (max-width: 900px) { .gal-masonry { columns: 3; } }
+    @media (max-width: 600px) { .gal-masonry { columns: 2; } }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <h1>Mama <em>Oliech</em></h1>
+    <p>Authentic Kenyan Cuisine Since 2008</p>
+  </header>
+  <nav class="site-nav">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="reservations.html">Reservations</a>
+    <a href="gallery.html" class="active">Gallery</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1600&q=80');"></div>
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content">
+      <span class="label">A Feast for the Eyes</span>
+      <h2>Our Gallery</h2>
+    </div>
+  </div>
+
+  <section class="section section-alt">
+    <div class="container">
+      <!-- Filter -->
+      <div class="gal-filter">
+        <button class="gfilt active" onclick="filterGal(this,'all')">All Photos</button>
+        <button class="gfilt" onclick="filterGal(this,'food')">Food</button>
+        <button class="gfilt" onclick="filterGal(this,'grill')">Grill</button>
+        <button class="gfilt" onclick="filterGal(this,'ambience')">Ambience</button>
+        <button class="gfilt" onclick="filterGal(this,'events')">Events</button>
+      </div>
+
+      <!-- Masonry Grid -->
+      <div class="gal-masonry" id="galGrid">
+
+        <div class="gcard" data-cat="food" onclick="openLb(0)">
+          <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&q=80" alt="Food spread"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Food</span><span class="gcard-title">Kenyan Spread</span></div>
+        </div>
+        <div class="gcard" data-cat="grill" onclick="openLb(1)">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=500&q=80" alt="Nyama Choma"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Grill</span><span class="gcard-title">Nyama Choma</span></div>
+        </div>
+        <div class="gcard" data-cat="ambience" onclick="openLb(2)">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80" alt="Restaurant interior"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Ambience</span><span class="gcard-title">Dining Area</span></div>
+        </div>
+        <div class="gcard" data-cat="food" onclick="openLb(3)">
+          <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500&q=80" alt="Kenyan dishes"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Food</span><span class="gcard-title">Chef's Selection</span></div>
+        </div>
+        <div class="gcard" data-cat="food" onclick="openLb(4)">
+          <img src="https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=500&q=80" alt="Tilapia"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Fish</span><span class="gcard-title">Fried Tilapia</span></div>
+        </div>
+        <div class="gcard" data-cat="food" onclick="openLb(5)">
+          <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?w=500&q=80" alt="Pilau"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Rice</span><span class="gcard-title">Coastal Pilau</span></div>
+        </div>
+        <div class="gcard" data-cat="ambience" onclick="openLb(6)">
+          <img src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=500&q=80" alt="Restaurant"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Ambience</span><span class="gcard-title">Evening Dining</span></div>
+        </div>
+        <div class="gcard" data-cat="grill" onclick="openLb(7)">
+          <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=500&q=80" alt="BBQ"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Grill</span><span class="gcard-title">Live Grill</span></div>
+        </div>
+        <div class="gcard" data-cat="events" onclick="openLb(8)">
+          <img src="https://images.unsplash.com/photo-1530062845289-9109b2c9c868?w=500&q=80" alt="Family dining"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Events</span><span class="gcard-title">Family Gatherings</span></div>
+        </div>
+        <div class="gcard" data-cat="food" onclick="openLb(9)">
+          <img src="https://images.unsplash.com/photo-1574484284002-952d92456975?w=500&q=80" alt="Stew"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Food</span><span class="gcard-title">Kenyan Stew</span></div>
+        </div>
+        <div class="gcard" data-cat="ambience" onclick="openLb(10)">
+          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&q=80" alt="Restaurant ambience"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Ambience</span><span class="gcard-title">Our Space</span></div>
+        </div>
+        <div class="gcard" data-cat="events" onclick="openLb(11)">
+          <img src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=500&q=80" alt="Food close up"/>
+          <div class="gcard-overlay"><span class="gcard-tag">Events</span><span class="gcard-title">Celebrations</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="closeLbOverlay(event)">
+    <button class="lb-close" onclick="closeLb()">&times;</button>
+    <button class="lb-nav lb-prev" onclick="navLb(-1)">&#8249;</button>
+    <img class="lightbox-img" id="lbImg" src="" alt=""/>
+    <button class="lb-nav lb-next" onclick="navLb(1)">&#8250;</button>
+    <p class="lb-caption" id="lbCap"></p>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col"><h4>Mama Oliech</h4><p>Authentic Kenyan cuisine served with love since 2008.</p></div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="menu.html">Menu</a></li><li><a href="reservations.html">Reservations</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Visit Us</h4><p>📍 Nairobi, Kenya<br/>📞 +254 700 000 000<br/>🕐 Mon–Sun: 7am – 10pm</p></div>
+    </div>
+    <p class="footer-bottom">&copy; 2026 <strong>Mama Oliech Restaurant</strong>. Website by <strong>Tekashi Designs</strong></p>
+  </footer>
+
+  <a href="https://wa.me/254700000000" class="wa-float" target="_blank">
+    <svg viewBox="0 0 32 32"><path d="M16 0C7.164 0 0 7.163 0 16c0 2.822.737 5.469 2.027 7.77L0 32l8.468-2.004A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.27 13.27 0 01-6.781-1.857l-.487-.289-5.027 1.189 1.21-4.905-.32-.506A13.248 13.248 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.888c-.397-.198-2.347-1.157-2.71-1.289-.364-.133-.628-.198-.893.199-.264.397-1.023 1.289-1.254 1.554-.23.264-.462.298-.859.1-.397-.198-1.676-.617-3.192-1.968-1.18-1.052-1.976-2.35-2.208-2.748-.23-.397-.024-.612.173-.81.178-.177.397-.462.595-.693.199-.23.265-.397.397-.661.133-.265.067-.496-.033-.694-.1-.199-.893-2.152-1.224-2.946-.322-.772-.649-.668-.893-.68l-.759-.013c-.264 0-.694.1-1.058.496-.364.397-1.39 1.357-1.39 3.31s1.423 3.84 1.621 4.104c.198.264 2.8 4.274 6.785 5.992.948.41 1.688.654 2.264.837.951.303 1.817.26 2.5.158.763-.114 2.347-.958 2.678-1.884.33-.927.33-1.721.23-1.884-.1-.165-.364-.265-.76-.463z"/></svg>
+  </a>
+
+  <script>
+    const imgs = [
+      {src:'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200&q=85',cap:'Kenyan Spread'},
+      {src:'https://images.unsplash.com/photo-1544025162-d76694265947?w=1200&q=85',cap:'Nyama Choma'},
+      {src:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=85',cap:'Dining Area'},
+      {src:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1200&q=85',cap:"Chef's Selection"},
+      {src:'https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=1200&q=85',cap:'Fried Tilapia'},
+      {src:'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=1200&q=85',cap:'Coastal Pilau'},
+      {src:'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=1200&q=85',cap:'Evening Dining'},
+      {src:'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=1200&q=85',cap:'Live Grill'},
+      {src:'https://images.unsplash.com/photo-1530062845289-9109b2c9c868?w=1200&q=85',cap:'Family Gatherings'},
+      {src:'https://images.unsplash.com/photo-1574484284002-952d92456975?w=1200&q=85',cap:'Kenyan Stew'},
+      {src:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=85',cap:'Our Space'},
+      {src:'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=1200&q=85',cap:'Celebrations'},
+    ];
+    let cur = 0;
+    const lb=document.getElementById('lightbox'), lbImg=document.getElementById('lbImg'), lbCap=document.getElementById('lbCap');
+    function openLb(i){ cur=i; lbImg.src=imgs[i].src; lbCap.textContent=imgs[i].cap; lb.classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeLb(){ lb.classList.remove('open'); document.body.style.overflow=''; }
+    function closeLbOverlay(e){ if(e.target===lb) closeLb(); }
+    function navLb(d){ cur=(cur+d+imgs.length)%imgs.length; lbImg.src=imgs[cur].src; lbCap.textContent=imgs[cur].cap; }
+    document.addEventListener('keydown',e=>{ if(!lb.classList.contains('open'))return; if(e.key==='Escape')closeLb(); if(e.key==='ArrowLeft')navLb(-1); if(e.key==='ArrowRight')navLb(1); });
+    function filterGal(btn,cat){ document.querySelectorAll('.gfilt').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.gcard').forEach(c=>{ c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none'; }); }
+  </script>
+</body>
+</html>
